@@ -11,10 +11,14 @@ cd /app
 rm -rf /app/*
 
 # run the export
-/bin/sh project_export.sh
+PROJECTS=`oc get projects | awk '{ print $1 }' | tail -n +2`
+for PROJECT in ${PROJECTS}; do
+  echo "Processing '${PROJECT}'"
+  /bin/bash project_export.sh ${PROJECT}
+done
 
 # store
-DATESTAMP=date +%Y%m%d
+DATESTAMP=`date +%Y%m%d`
 zip -r /openshift-backup/openshift-backup${DATESTAMP}.zip *
 
 # delete files older than ${OPENSHIFT_BACKUP_RETAIN_DAYS}
