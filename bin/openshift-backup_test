@@ -1,0 +1,14 @@
+#!/bin/sh
+
+test_identity() {
+  assertEquals " identity assertion;" 0 0
+}
+
+for dependency in shunit2; do
+  if [ -z $(which $dependency) ]; then
+    echo "Missing dependency '$dependency'"
+    exit 1
+  fi
+done
+
+. shunit2

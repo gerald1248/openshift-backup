@@ -1,0 +1,3 @@
+export OPENSHIFT_BACKUP_NAME=openshift-backup
+export OPENSHIFT_BACKUP_NAMESPACE=cluster-backup
+export OPENSHIFT_BACKUP_CAPACITY=2Gi

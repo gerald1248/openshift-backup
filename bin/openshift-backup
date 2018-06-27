@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -z ${OPENSHIFT_BACKUP_RETAIN_DAYS} ]; then
+  OPENSHIFT_BACKUP_RETAIN_DAYS=7
+fi
+
+# work from home dir
+cd /app
+
+# no cached data
+rm -rf /app/*
+
+# run the export
+/bin/sh project_export.sh
+
+# store
+DATESTAMP=date +%Y%m%d
+zip -r /openshift-backup/openshift-backup${DATESTAMP}.zip *
+
+# delete files older than ${OPENSHIFT_BACKUP_RETAIN_DAYS}
+find /openshift-backup/ -type f -mtime +${OPENSHIFT_BACKUP_RETAIN_DAYS} -name '*.zip' -execdir rm -- '{}' +
