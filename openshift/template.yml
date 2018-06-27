@@ -35,10 +35,34 @@ objects:
     namespace: ${NAMESPACE}
     labels:
       app: ${NAME}
+- kind: ClusterRole
+  apiVersion: v1
+  metadata:
+    name: ${NAME}-secret-reader
+  rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
 - kind: ClusterRoleBinding
   apiVersion: v1
   metadata:
+    name: ${NAME}-secret-reader
+    namespace: ${NAMESPACE}
+    labels:
+      app: ${NAME}
+  roleRef:
+    kind: ClusterRole
+    name: ${NAME}-secret-reader
+  subjects:
+  -
+    kind: ServiceAccount
     name: ${NAME}
+  userNames:
+  - "system:serviceaccount:${NAMESPACE}:${NAME}"
+- kind: ClusterRoleBinding
+  apiVersion: v1
+  metadata:
+    name: ${NAME}-cluster-reader
     namespace: ${NAMESPACE}
     labels:
       app: ${NAME}

@@ -12,6 +12,6 @@ fi
 
 oc new-project ${OPENSHIFT_BACKUP_NAMESPACE} --display-name="OpenShift cluster backup" >/dev/null
 
-oc new-app --file=openshift/template-ephemeral.yml --param='NAME'="${OPENSHIFT_BACKUP_NAME}" --param='NAMESPACE'="${OPENSHIFT_BACKUP_NAMESPACE}" --param='CAPACITY'="${OPENSHIFT_BACKUP_CAPACITY}"
+oc new-app --file=openshift/template.yml --param='NAME'="${OPENSHIFT_BACKUP_NAME}" --param='NAMESPACE'="${OPENSHIFT_BACKUP_NAMESPACE}" --param='CAPACITY'="${OPENSHIFT_BACKUP_CAPACITY}"
 
 oc get all

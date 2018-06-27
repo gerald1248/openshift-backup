@@ -4,7 +4,8 @@
 . ./exports
 
 oc delete --ignore-not-found project/${OPENSHIFT_BACKUP_NAMESPACE}
-oc delete --ignore-not-found clusterrolebinding/${OPENSHIFT_BACKUP_NAME}
+oc delete --ignore-not-found clusterrolebinding/${OPENSHIFT_BACKUP_NAME}-cluster-reader
+oc delete --ignore-not-found clusterrolebinding/${OPENSHIFT_BACKUP_NAME}-secret-reader
 
 for i in {1..20}; do
   echo "[${i}] Project termination ongoing..."
