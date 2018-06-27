@@ -3,6 +3,7 @@
 OPENSHIFT_BACKUP_VERSION=latest
 OC_VERSION=latest
 DOWNLOAD_ALWAYS=0
+GITHUB_NAME=gerald1248
 
 for dependency in jq curl head unzip; do
   if [ -z $(which $dependency) ]; then
@@ -32,4 +33,6 @@ for script in project_export.sh project_import.sh; do
   fi
 done
 
-docker build -t openshift-backup:$OPENSHIFT_BACKUP_VERSION .
+docker build -t openshift-backup:${OPENSHIFT_BACKUP_VERSION} .
+docker tag openshift-backup:${OPENSHIFT_BACKUP_VERSION} ${GITHUB_NAME}/openshift-backup:${OPENSHIFT_BACKUP_VERSION}
+docker push ${GITHUB_NAME}/openshift-backup:${OPENSHIFT_BACKUP_VERSION}
