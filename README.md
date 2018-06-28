@@ -6,7 +6,7 @@ This project sets up a CronJob running the basic project backup script [project_
 
 Please note that no attempt is made to back up the contents of databases or mounted persistent volumes. This backup focuses on the API objects stored in `etcd`.
 
-Admin access is required at the start (to create project and the `cluster-reader` ClusterRoleBinding for the service account), but from then on access is strictly controlled.
+Admin access is required at the start (to create project and the `cluster-reader` and `secret-reader` ClusterRoleBindings for the service account), but from then on access is strictly controlled.
 
 ![Permissions](ditaa/permissions.png)
 
