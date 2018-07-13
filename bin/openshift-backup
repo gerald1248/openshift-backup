@@ -20,6 +20,7 @@ done
 # store
 DATESTAMP=`date +%Y%m%d`
 zip -r /openshift-backup/openshift-backup${DATESTAMP}.zip *
+chmod 666 /openshift-backup/openshift-backup${DATESTAMP}.zip
 
 # delete files older than ${OPENSHIFT_BACKUP_RETAIN_DAYS}
 find /openshift-backup/ -type f -mtime +${OPENSHIFT_BACKUP_RETAIN_DAYS} -name '*.zip' -execdir rm -- '{}' +
