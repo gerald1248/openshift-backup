@@ -7,7 +7,4 @@ test:
 clean:
 	./clean.sh
 
-build-docker-image:
-	./build-docker-image.sh
-
 default: create
