@@ -39,6 +39,8 @@ You can skip this step if you're happy to use the Docker Hub image that accompan
 $ make build-docker-image
 ```
 
+The current version is built from this repo. It sacrifices the small footprint of the Alpine-based original for readily installable `oc` binaries and CentOS/RHEL compatibility.
+
 ## Cleanup
 Call `make clean` to remove the project `cluster-backup` and the rolebinding that gives the serviceaccount `openshift-backup` read-only access to all projects.
 
