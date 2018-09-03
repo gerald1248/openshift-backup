@@ -2,7 +2,7 @@
 
 ![Overview of openshift-backup](ditaa/backup-restore.png)
 
-This project sets up a CronJob running the basic project backup script [project_export.sh on GitHub](https://raw.githubusercontent.com/openshift/openshift-ansible-contrib/master/reference-architecture/day2ops/scripts/project_export.sh).
+This project sets up a CronJob running the basic project backup script [project_export.sh on GitHub](https://raw.githubusercontent.com/gerald1248/openshift-ansible-contrib/refactor_export/reference-architecture/day2ops/scripts/project_export.sh).
 
 Please note that no attempt is made to back up the contents of databases or mounted persistent volumes. This backup focuses on the API objects stored in `etcd`.
 
