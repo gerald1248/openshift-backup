@@ -1,5 +1,8 @@
 # OpenShift cluster backup
 
+![Docker Automated](https://img.shields.io/docker/automated/gerald1248/openshift-backup.svg)
+![Docker Build](https://img.shields.io/docker/build/gerald1248/openshift-backup.svg)
+
 ![Overview of openshift-backup](ditaa/backup-restore.png)
 
 This project sets up a CronJob running the basic project backup script [project_export.sh on GitHub](https://raw.githubusercontent.com/gerald1248/openshift-ansible-contrib/refactor_export/reference-architecture/day2ops/scripts/project_export.sh).
