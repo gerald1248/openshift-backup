@@ -1,26 +1,26 @@
 #!/bin/sh
 
-if [ -z ${OPENSHIFT_BACKUP_RETAIN_DAYS} ]; then
-  OPENSHIFT_BACKUP_RETAIN_DAYS=7
+if [ -z "${OPENSHIFT_BACKUP_RETAIN_DAYS}" ]; then
+    OPENSHIFT_BACKUP_RETAIN_DAYS=7
 fi
 
 # work from home dir
-cd /app
+cd /app || { echo "Could not change dir to '/app', exiting"; exit 1; }
 
 # no cached data
 rm -rf /app/*
 
 # run the export
-PROJECTS=`oc get projects | awk '{ print $1 }' | tail -n +2`
+PROJECTS=$(oc get projects --no-headers | awk '{ print $1 }')
 for PROJECT in ${PROJECTS}; do
-  echo "Processing '${PROJECT}'"
-  /bin/bash project_export.sh ${PROJECT}
+    echo "Processing '${PROJECT}'"
+    /bin/bash project_export.sh "${PROJECT}"
 done
 
 # store
-DATESTAMP=`date +%Y%m%d`
-zip -r /openshift-backup/openshift-backup${DATESTAMP}.zip *
-chmod 666 /openshift-backup/openshift-backup${DATESTAMP}.zip
+DATESTAMP="$(date +%Y%m%d)"
+zip -r "/openshift-backup/openshift-backup${DATESTAMP}.zip" -- *
+chmod 666 "/openshift-backup/openshift-backup${DATESTAMP}.zip"
 
 # delete files older than ${OPENSHIFT_BACKUP_RETAIN_DAYS}
-find /openshift-backup/ -type f -mtime +${OPENSHIFT_BACKUP_RETAIN_DAYS} -name '*.zip' -execdir rm -- '{}' +
+find /openshift-backup/ -type f -mtime +"${OPENSHIFT_BACKUP_RETAIN_DAYS}" -name '*.zip' -execdir rm -- '{}' +
