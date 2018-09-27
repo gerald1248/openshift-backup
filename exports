@@ -1,3 +1,5 @@
-export OPENSHIFT_BACKUP_NAME=openshift-backup
-export OPENSHIFT_BACKUP_NAMESPACE=cluster-backup
-export OPENSHIFT_BACKUP_CAPACITY=2Gi
+export OPENSHIFT_BACKUP_NAME="openshift-backup" \
+    OPENSHIFT_BACKUP_NAMESPACE="cluster-backup" \
+    OPENSHIFT_BACKUP_CAPACITY="2Gi" \
+    OPENSHIFT_BACKUP_SCHEDULE="15 0 * * *" \
+    BACKUP_SECRETS="true"
