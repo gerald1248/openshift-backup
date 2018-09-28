@@ -4,8 +4,9 @@ LABEL maintainer="Gerald Schmidt <gerald1248@gmail.com>"
 LABEL description="Project backup for OpenShift clusters"
 
 RUN groupadd app && \
-    useradd -g app app && \
-    yum install -y epel-release zip && \
+    useradd -g app app
+RUN yum install -y epel-release
+RUN yum install -y zip && \
     yum install -y jq centos-release-openshift-origin310 && \
     yum install -y origin-clients && \
     mkdir /openshift-backup && \
