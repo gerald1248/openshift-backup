@@ -28,6 +28,14 @@ See the [`exports`](/exports) file for an example, which can directly be used wi
 | `OPENSHIFT_BACKUP_CAPACITY`  | `2Gi`              | Create a PersistentVolumeClaim with this size and use it to store the backups. |
 | `OPENSHIFT_BACKUP_SCHEDULE`  | `15 0 * * *`       | The schedule at which the backup CronJob will be run.                          |
 
+## Templates
+
+| Filename                   | Description                                                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `template.yml`             | Backup CronJob which runs on cluster-reader and "custom" cluster-secret-reader (Cluster)Roles.                                                   |
+| `template-no-secret.yml`   | Same as `template.yml` but does not backup secrets.                                                                                              |
+| `template-non-admin-*.yml` | Backup CronJob which can be run as non cluster-reader/cluster-admin User. Must have `edit` permissions to the projects that should be backed up. |
+
 ## Set the timer
 ```
 $ make

@@ -1,31 +1,28 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: openshift-backup-app-no-secret-template
+  template: openshift-backup-app-no-admin-job-template
 message: |-
   A recurring backup job has been created.
   For more information on using this template, see https://github.com/gerald1248/openshift-backup
 metadata:
-  name: openshift-backup-app-no-secret-template
+  name: openshift-backup-app-no-admin-job-template
   annotations:
     description: |-
-      OpenShift cluster backup based on 'oc' and the experimental 2nd day operations backup script (no secret).
+      OpenShift cluster backup based on 'oc' and the experimental 2nd day operations backup script (non-admin).
+      This is just the job, you need to use the binding version to "bind" it to the projects you want backed up.
 parameters:
 - name: NAME
   displayName: Name
   description: Name of each API object
   value: openshift-backup
-- name: NAMESPACE
-  displayName: Project
-  description: The project that is created for the test runner
-  value: cluster-backup
 - name: SCHEDULE
   displayName: Schedule
   description: Schedule determining when and how often tests are run
   value: "15 0 * * *"
 - name: CAPACITY
   displayName: Persistent volume capacity
-  description: Attempt to bind to this persistent volume
+  description: Create a PersistentVolumeClaim with this size and use it to store the backups.
   value: "2Gi"
 - name: BACKUP_RETAIN_DAYS
   displayName: Backup retain backups (days)
@@ -36,24 +33,8 @@ objects:
   apiVersion: v1
   metadata:
     name: ${NAME}
-    namespace: ${NAMESPACE}
     labels:
       app: ${NAME}
-- kind: ClusterRoleBinding
-  apiVersion: v1
-  metadata:
-    name: ${NAME}-cluster-reader
-    namespace: ${NAMESPACE}
-    labels:
-      app: ${NAME}
-  roleRef:
-    kind: ClusterRole
-    name: cluster-reader
-  subjects:
-  - kind: ServiceAccount
-    name: ${NAME}
-  userNames:
-  - "system:serviceaccount:${NAMESPACE}:${NAME}"
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
@@ -70,7 +51,6 @@ objects:
   apiVersion: v1
   metadata:
     name: ${NAME}
-    namespace: ${NAMESPACE}
     labels:
       app: ${NAME}
   spec:
@@ -99,10 +79,12 @@ objects:
               cpu: 100m
               memory: 512Mi
           env:
+          - name: POD_NAMESPACE
+            value: ${NAMESPACE}
           - name: OPENSHIFT_BACKUP_RETAIN_DAYS
             value: ${BACKUP_RETAIN_DAYS}
           - name: BACKUP_SECRETS
-            value: "false"
+            value: ${BACKUP_SECRETS}
           volumeMounts:
           - name: ${NAME}-data
             mountPath: /openshift-backup
@@ -114,7 +96,6 @@ objects:
   kind: CronJob
   metadata:
     name: ${NAME}
-    namespace: ${NAMESPACE}
     labels:
       app: ${NAME}
   spec:
@@ -142,8 +123,6 @@ objects:
               - -c
               - openshift-backup
               env:
-              - name: POD_NAMESPACE
-                value: ${NAMESPACE}
               - name: OPENSHIFT_BACKUP_RETAIN_DAYS
                 value: ${BACKUP_RETAIN_DAYS}
               volumeMounts:
@@ -154,33 +133,3 @@ objects:
               persistentVolumeClaim:
                 claimName: ${NAME}
             restartPolicy: Never
-- kind: LimitRange
-  apiVersion: v1
-  metadata:
-    name: ${NAME}
-    namespace: ${NAMESPACE}
-    labels:
-      app: ${NAME}
-  spec:
-    limits:
-    - type: Container
-      default:
-        cpu: 400m
-        memory: 1Gi
-      defaultRequest:
-        cpu: 200m
-        memory: 512Mi
-- kind: ResourceQuota
-  apiVersion: v1
-  metadata:
-    name: ${NAME}
-    namespace: ${NAMESPACE}
-    labels:
-      app: ${NAME}
-  spec:
-    hard:
-      pods: "4"
-      requests.cpu: 800m
-      requests.memory: 2Gi
-      limits.cpu: 1600m
-      limits.memory: 4Gi

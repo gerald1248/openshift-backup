@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: openshift-backup-app-no-admin-binding-template
+message: |-
+  A recurring backup job has been created.
+  For more information on using this template, see https://github.com/gerald1248/openshift-backup
+metadata:
+  name: openshift-backup-app-no-admin-binding-template
+  annotations:
+    description: |-
+      OpenShift cluster backup based on 'oc' and the experimental 2nd day operations backup script (non-admin).
+parameters:
+- name: NAME
+  displayName: Name
+  description: Name of each API object
+  value: openshift-backup
+- name: BACKUP_NAMESPACE
+  displayName: Namespace name
+  description: Name of the namespace/project in which the openshift-backup Job resides in.
+- name: SCHEDULE
+  displayName: Schedule
+  description: Schedule determining when and how often tests are run
+  value: "15 0 * * *"
+- name: CAPACITY
+  displayName: Persistent volume capacity
+  description: Create a PersistentVolumeClaim with this size and use it to store the backups.
+  value: "2Gi"
+- name: BACKUP_RETAIN_DAYS
+  displayName: Backup retain backups (days)
+  description: How many days backups should be retained.
+  value: "7"
+objects:
+- kind: Role
+  apiVersion: v1
+  metadata:
+    name: ${NAME}-secret-reader
+  rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+- kind: RoleBinding
+  apiVersion: v1
+  metadata:
+    name: ${NAME}-secret-reader
+    labels:
+      app: ${NAME}
+  roleRef:
+    kind: Role
+    name: ${NAME}-secret-reader
+  subjects:
+  - kind: ServiceAccount
+    name: ${NAME}
+  userNames:
+  - "system:serviceaccount:${BACKUP_NAMESPACE}:${NAME}"
+- kind: RoleBinding
+  apiVersion: v1
+  metadata:
+    name: ${NAME}-project-reader
+    labels:
+      app: ${NAME}
+  roleRef:
+    kind: ClusterRole
+    name: view
+  subjects:
+  - kind: ServiceAccount
+    name: ${NAME}
+  userNames:
+  - "system:serviceaccount:${BACKUP_NAMESPACE}:${NAME}"
