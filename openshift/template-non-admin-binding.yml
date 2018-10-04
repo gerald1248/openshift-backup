@@ -32,7 +32,7 @@ parameters:
   value: "7"
 objects:
 - kind: Role
-  apiVersion: v1
+  apiVersion: rbac.authorization.k8s.io/v1
   metadata:
     name: ${NAME}-secret-reader
   rules:
@@ -40,7 +40,7 @@ objects:
     resources: ["secrets"]
     verbs: ["get", "list"]
 - kind: RoleBinding
-  apiVersion: v1
+  apiVersion: rbac.authorization.k8s.io/v1
   metadata:
     name: ${NAME}-secret-reader
     labels:
@@ -54,7 +54,7 @@ objects:
   userNames:
   - "system:serviceaccount:${BACKUP_NAMESPACE}:${NAME}"
 - kind: RoleBinding
-  apiVersion: v1
+  apiVersion: rbac.authorization.k8s.io/v1
   metadata:
     name: ${NAME}-project-reader
     labels:
