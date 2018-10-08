@@ -9,7 +9,7 @@ metadata:
   name: openshift-backup-app-template
   annotations:
     description: |-
-      OpenShift cluster backup based on 'oc' and the experimental 2nd day operations backup script
+      OpenShift cluster backup based on 'oc' and the experimental 2nd day operations backup script (with secrets).
 parameters:
 - name: NAME
   displayName: Name
@@ -40,7 +40,7 @@ objects:
     labels:
       app: ${NAME}
 - kind: ClusterRole
-  apiVersion: v1
+  apiVersion: rbac.authorization.k8s.io/v1
   metadata:
     name: ${NAME}-secret-reader
   rules:
@@ -48,7 +48,7 @@ objects:
     resources: ["secrets"]
     verbs: ["get", "list"]
 - kind: ClusterRoleBinding
-  apiVersion: v1
+  apiVersion: rbac.authorization.k8s.io/v1
   metadata:
     name: ${NAME}-secret-reader
     namespace: ${NAMESPACE}
@@ -63,7 +63,7 @@ objects:
   userNames:
   - "system:serviceaccount:${NAMESPACE}:${NAME}"
 - kind: ClusterRoleBinding
-  apiVersion: v1
+  apiVersion: rbac.authorization.k8s.io/v1
   metadata:
     name: ${NAME}-cluster-reader
     namespace: ${NAMESPACE}
@@ -123,8 +123,6 @@ objects:
               cpu: 100m
               memory: 512Mi
           env:
-          - name: POD_NAMESPACE
-            value: ${NAMESPACE}
           - name: OPENSHIFT_BACKUP_RETAIN_DAYS
             value: ${BACKUP_RETAIN_DAYS}
           - name: BACKUP_SECRETS
