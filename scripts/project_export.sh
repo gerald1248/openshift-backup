@@ -132,7 +132,7 @@ dcs(){
           .metadata.generation,
           .spec.triggers[].imageChangeParams.lastTriggeredImage
         )' > "${PROJECT}/dc_${dc}.json"
-        if jq '.spec.triggers[].type' "${PROJECT}/dc_${dc}.json" | ! grep -q "ImageChange"; then
+        if [ !$(cat ${PROJECT}/dc_${dc}.json | jq '.spec.triggers[].type' | grep -q "ImageChange") ]; then
             for container in $(jq -r '.spec.triggers[] | select(.type == "ImageChange") .imageChangeParams.containerNames[]' "${PROJECT}/dc_${dc}.json"); do
                 echo "Patching DC..."
                 OLD_IMAGE=$(jq --arg cname "${container}" -r '.spec.template.spec.containers[] | select(.name == $cname)| .image' "${PROJECT}/dc_${dc}.json")
@@ -201,7 +201,7 @@ svcs(){
     SVCS=$(oc get svc -n "${PROJECT}" -o jsonpath="{.items[*].metadata.name}")
     for svc in ${SVCS}; do
         oc get --export -o=json svc "${svc}" -n "${PROJECT}" | jq '
-      del(.status,
+        del(.status,
             .metadata.uid,
             .metadata.selfLink,
             .metadata.resourceVersion,
@@ -210,14 +210,14 @@ svcs(){
             .spec.clusterIP
         )' > "${PROJECT}/svc_${svc}.json"
         if [[ $(jq -e '.spec.selector.app' "${PROJECT}/svc_${svc}.json") == "null" ]]; then
-            oc get --export -o json endpoints "${svc}" -n "${PROJECT}" | jq '
-        del(.status,
+          oc get --export -o json endpoints "${svc}" -n "${PROJECT}" | jq '
+          del(.status,
             .metadata.uid,
             .metadata.selfLink,
             .metadata.resourceVersion,
             .metadata.creationTimestamp,
             .metadata.generation
-            )' > "${PROJECT}/endpoint_${svc}.json"
+          )' > "${PROJECT}/endpoint_${svc}.json"
         fi
     done
 }

@@ -14,7 +14,7 @@ fi
 oc new-project "${OPENSHIFT_BACKUP_NAMESPACE}" --display-name="OpenShift cluster backup" >/dev/null
 
 TEMPLATE_FILE="openshift/template.yml"
-if ${BACKUP_SECRETS}; then
+if [ ! ${BACKUP_SECRETS} ]; then
     TEMPLATE_FILE="openshift/template-no-secret.yml"
 fi
 
