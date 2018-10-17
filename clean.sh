@@ -12,7 +12,7 @@ fi
 
 for i in $(seq 1 20); do
     echo "[${i}] Project termination ongoing..."
-    if [ "$(oc get projects | grep -ec "\\b${OPENSHIFT_BACKUP_NAMESPACE}\\b")" -eq "0" ]; then
+    if [ $(oc get projects | grep -c "${OPENSHIFT_BACKUP_NAMESPACE}") -eq "0" ]; then
         echo "Done"
         break;
     fi
