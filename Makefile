@@ -2,7 +2,11 @@ create:
 	./create.sh
 
 test:
+	./Dockerfile_test
 	cd bin; ./openshift-backup_test
+
+build-docker-image:
+	./build-docker-image.sh
 
 clean:
 	./clean.sh
