@@ -130,7 +130,7 @@ dcs(){
 '.items[].metadata.resourceVersion,'\
 '.items[].metadata.creationTimestamp,'\
 '.items[].metadata.generation,'\
-'.spec.triggers[].imageChangeParams.lastTriggeredImage'\
+'.items[].spec.triggers[].imageChangeParams.lastTriggeredImage'\
 ')'
 }
 
@@ -489,7 +489,7 @@ mkdir -p "${PROJECT}"
 ns
 rolebindings
 serviceaccounts
-if ${BACKUP_SECRETS}; then
+if [ ${BACKUP_SECRETS} ]; then
     secrets
 fi
 dcs
