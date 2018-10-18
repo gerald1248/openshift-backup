@@ -28,6 +28,10 @@ parameters:
   displayName: Backup retain backups (days)
   description: How many days backups should be retained.
   value: "7"
+- name: BACKUP_SECRETS
+  displayName: Backup secrets
+  description: Toggle for secrets
+  value: "true"
 objects:
 - kind: ServiceAccount
   apiVersion: v1
