@@ -18,7 +18,7 @@ for PROJECT in ${PROJECTS}; do
 done
 
 # store
-DATESTAMP="$(date +%Y%m%d)"
+DATESTAMP="$(date +%Y%m%d%H%M)"
 zip -r "/openshift-backup/openshift-backup${DATESTAMP}.zip" -- *
 chmod 666 "/openshift-backup/openshift-backup${DATESTAMP}.zip"
 
