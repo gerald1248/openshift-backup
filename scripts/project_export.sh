@@ -120,27 +120,18 @@ secrets(){
 }
 
 dcs(){
-    echo "Exporting deploymentconfigs to ${PROJECT}/dc_*.json"
-    DCS=$(oc get dc -n "${PROJECT}" -o jsonpath="{.items[*].metadata.name}")
-    for dc in ${DCS}; do
-        oc get --export -o=json dc "${dc}" -n "${PROJECT}" | jq '
-      del(.status,
-          .metadata.uid,
-          .metadata.selfLink,
-          .metadata.resourceVersion,
-          .metadata.creationTimestamp,
-          .metadata.generation,
-          .spec.triggers[].imageChangeParams.lastTriggeredImage
-        )' > "${PROJECT}/dc_${dc}.json"
-        if [ !$(cat ${PROJECT}/dc_${dc}.json | jq '.spec.triggers[].type' | grep -q "ImageChange") ]; then
-            for container in $(jq -r '.spec.triggers[] | select(.type == "ImageChange") .imageChangeParams.containerNames[]' "${PROJECT}/dc_${dc}.json"); do
-                echo "Patching DC..."
-                OLD_IMAGE=$(jq --arg cname "${container}" -r '.spec.template.spec.containers[] | select(.name == $cname)| .image' "${PROJECT}/dc_${dc}.json")
-                NEW_IMAGE=$(jq -r '.spec.triggers[] | select(.type == "ImageChange") .imageChangeParams.from.name // empty' "${PROJECT}/dc_${dc}.json")
-                sed -e "s#$OLD_IMAGE#$NEW_IMAGE#g" "${PROJECT}/dc_${dc}.json" >> "${PROJECT}/dc_${dc}_patched.json"
-            done
-        fi
-    done
+    exportlist \
+        dc \
+        dcs \
+        'del('\
+'.items[].status,'\
+'.items[].metadata.uid,'\
+'.items[].metadata.selfLink,'\
+'.items[].metadata.resourceVersion,'\
+'.items[].metadata.creationTimestamp,'\
+'.items[].metadata.generation,'\
+'.spec.triggers[].imageChangeParams.lastTriggeredImage'\
+')'
 }
 
 bcs(){
@@ -197,29 +188,29 @@ rcs(){
 }
 
 svcs(){
-    echo "Exporting services to ${PROJECT}/svc_*.json"
-    SVCS=$(oc get svc -n "${PROJECT}" -o jsonpath="{.items[*].metadata.name}")
-    for svc in ${SVCS}; do
-        oc get --export -o=json svc "${svc}" -n "${PROJECT}" | jq '
-        del(.status,
-            .metadata.uid,
-            .metadata.selfLink,
-            .metadata.resourceVersion,
-            .metadata.creationTimestamp,
-            .metadata.generation,
-            .spec.clusterIP
-        )' > "${PROJECT}/svc_${svc}.json"
-        if [[ $(jq -e '.spec.selector.app' "${PROJECT}/svc_${svc}.json") == "null" ]]; then
-          oc get --export -o json endpoints "${svc}" -n "${PROJECT}" | jq '
-          del(.status,
-            .metadata.uid,
-            .metadata.selfLink,
-            .metadata.resourceVersion,
-            .metadata.creationTimestamp,
-            .metadata.generation
-          )' > "${PROJECT}/endpoint_${svc}.json"
-        fi
-    done
+    exportlist \
+        svc \
+        svcs \
+        'del('\
+'.items[].status,'\
+'.items[].metadata.uid,'\
+'.items[].metadata.selfLink,'\
+'.items[].metadata.creationTimestamp,'\
+'.items[].metadata.generation,'\
+'.items[].spec.clusterIP)'
+}
+
+endpoints(){
+    exportlist \
+        endpoints \
+        endpoints \
+        'del('\
+'.items[].status,'\
+'.items[].metadata.uid,'\
+'.items[].metadata.selfLink,'\
+'.items[].metadata.resourceVersion,'\
+'.items[].metadata.creationTimestamp,'\
+'.items[].metadata.generation)'
 }
 
 pods(){
@@ -508,6 +499,7 @@ is
 imagestreamtags
 rcs
 svcs
+endpoints
 pods
 podpreset
 cms
