@@ -32,6 +32,10 @@ parameters:
   displayName: Backup secrets
   description: Toggle for secrets
   value: "true"
+- name: STORAGECLASS
+  displayName: StorageClass for PVC
+  description: Name of the StorageClass to use for PVC.
+  value: ""
 objects:
 - kind: ServiceAccount
   apiVersion: v1
@@ -48,6 +52,7 @@ objects:
   spec:
     accessModes:
     - ReadWriteMany
+    storageClassName: ${STORAGECLASS}
     resources:
       requests:
         storage: ${CAPACITY}
