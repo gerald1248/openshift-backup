@@ -16,20 +16,8 @@ parameters:
   description: Name of each API object
   value: openshift-backup
 - name: BACKUP_NAMESPACE
-  displayName: Namespace name
+  displayName: Backup Job Namespace
   description: Name of the namespace/project in which the openshift-backup Job resides in.
-- name: SCHEDULE
-  displayName: Schedule
-  description: Schedule determining when and how often tests are run
-  value: "15 0 * * *"
-- name: CAPACITY
-  displayName: Persistent volume capacity
-  description: Create a PersistentVolumeClaim with this size and use it to store the backups.
-  value: "2Gi"
-- name: BACKUP_RETAIN_DAYS
-  displayName: Backup retain backups (days)
-  description: How many days backups should be retained.
-  value: "7"
 objects:
 - kind: Role
   apiVersion: authorization.openshift.io/v1
