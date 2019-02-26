@@ -18,6 +18,6 @@ if [ ! ${BACKUP_SECRETS} ]; then
     TEMPLATE_FILE="openshift/template-no-secret.yml"
 fi
 
-oc new-app --file="${TEMPLATE_FILE}" --param='NAME'="${OPENSHIFT_BACKUP_NAME}" --param='NAMESPACE'="${OPENSHIFT_BACKUP_NAMESPACE}" --param='CAPACITY'="${OPENSHIFT_BACKUP_CAPACITY}" --param='SCHEDULE'="${OPENSHIFT_BACKUP_SCHEDULE}"
+oc process -f "${TEMPLATE_FILE}" --param='NAME'="${OPENSHIFT_BACKUP_NAME}" --param='NAMESPACE'="${OPENSHIFT_BACKUP_NAMESPACE}" --param='CAPACITY'="${OPENSHIFT_BACKUP_CAPACITY}" --param='SCHEDULE'="${OPENSHIFT_BACKUP_SCHEDULE}" | oc apply -f -
 
 oc get all
